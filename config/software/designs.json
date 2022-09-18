@@ -284,6 +284,14 @@
       "difficulty": 1,
       "tags": ["tops", "historical"]
     },
+    "tortuga": "FIXME: A FreeSewing pattern that needs a description",
+    "ursula": {
+      "description": "A FreeSewing pattern for a basic, highly-customizable underwear pattern",
+      "code": "Natalia Sayang",
+      "design": "Natalia Sayang",
+      "difficulty": 1,
+      "tags": ["bottoms", "underwear"]
+    },
     "unice": {
       "description": "A FreeSewing pattern for a basic, highly-customizable underwear pattern",
       "code": ["Anna Puk", "Natalia Sayang"],
