@@ -8,7 +8,7 @@ export function logMeasurement(part, measurement, mm) {
   const { log } = part.shorthand()
   const cmin = units(mm)
   let shortname = part.name.substring(part.name.indexOf('.') + 1)
-  shortname = shortname.charAt(0).toUpperCase() + shortname.substring(1) 
+  shortname = shortname.charAt(0).toUpperCase() + shortname.substring(1)
   log.info(shortname + ' ' + measurement + ': ' + cmin)
 }
 
@@ -30,22 +30,19 @@ export function showPoints(points, scale, textsize) {
       .attr('data-scale', scale)
   }
 }
- 
-function draftTortugaBase({
-  log,
-  units,
-  sa,
-  measurements,
-  options,
-  part,
-}) {
 
+function draftTortugaBase({ log, units, sa, measurements, options, part }) {
   const DEBUG = true
   if (DEBUG) {
+    // Log seam allowance.
     log.debug('Seam allowance: ' + units(sa))
+
+    // Log measurements.
     for (let m in measurements) {
       log.debug('measurements.' + m + ': ' + units(measurements[m]))
     }
+
+    // Log options.
     for (let o in options) {
       log.debug('options.' + o + ': ' + options[o])
     }
@@ -56,18 +53,14 @@ function draftTortugaBase({
   // Estimate model's actual shoulder length, based on the
   // shoulder-to-shoulder and neck circumference measurements.
   const neckDiameter = measurements.neck / Math.PI
-  measurements.neckToShoulder = (measurements.shoulderToShoulder -
-    neckDiameter) / 2
-  log.info('Calculated measurement.neckToShoulder: ' +
-    units(measurements.neckToShoulder))
+  measurements.neckToShoulder = (measurements.shoulderToShoulder - neckDiameter) / 2
+  log.info('Calculated measurement.neckToShoulder: ' + units(measurements.neckToShoulder))
 
   //------------------------------------------------
   // elbowToWrist calculated measurement
-  measurements.elbowToWrist = measurements.shoulderToWrist -
-    measurements.shoulderToElbow
-  log.info('Calculated measurement.elbowToWrist: ' +
-    units(measurements.elbowToWrist))
-  
+  measurements.elbowToWrist = measurements.shoulderToWrist - measurements.shoulderToElbow
+  log.info('Calculated measurement.elbowToWrist: ' + units(measurements.elbowToWrist))
+
   return part
 }
 
@@ -103,7 +96,7 @@ export const base = {
     // Add reinforcement strap to the shoulder seams?
     shoulderStrapUse: { bool: true, menu: 'body' },
     // Width of shoulder strap, as percentage of length
-    shoulderStrapWidth: { pct:20, min:15, max:30, menu: 'body' },
+    shoulderStrapWidth: { pct: 20, min: 15, max: 30, menu: 'body' },
     // Length of vertical chest slit, as percentage of HPS-to-bust.
     chestSlitLength: { pct: 100, min: 50, max: 125, menu: 'body' },
     // Add a reinforcement patch to the bottom of the chest slit?
@@ -138,9 +131,12 @@ export const base = {
     collarClosure: {
       dflt: 'TwoSetsOfButtonholes',
       list: [
-        'TwoSetsOfButtonholes', 'TwoSetsOfButtonsAndButtonholes',
-        'OneSetOfButtonholes', 'OneSetOfButtonAndButtonhole',
-        'none' ],
+        'TwoSetsOfButtonholes',
+        'TwoSetsOfButtonsAndButtonholes',
+        'OneSetOfButtonholes',
+        'OneSetOfButtonAndButtonhole',
+        'none',
+      ],
       menu: 'neck',
     },
     // Length of sleeve, as percent added to shoulder-to-wrist.
@@ -161,7 +157,7 @@ export const base = {
     // Style of cuff closure.
     cuffClosure: {
       dflt: 'TwoButtonholes',
-      list: ['TwoButtonholes', 'ButtonAndButtonhole', 'none'], 
+      list: ['TwoButtonholes', 'ButtonAndButtonhole', 'none'],
       menu: 'sleeve',
     },
   },
