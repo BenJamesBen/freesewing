@@ -13,6 +13,6 @@ You can find a list of all FreeSewing tutorials below:
 
 Tutorials are lessons that take you by the hand through a series of steps to complete a project.
 
-For more details, refer to [How we structure our documentation](/guides/docs).
+For more details, please refer to [How we structure our documentation](/guides/docs).
 
 </Related>
