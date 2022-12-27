@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react'
 
 // See: https://mdxjs.com/guides/mdx-on-demand/
 import { run } from '@mdx-js/mdx'
-import * as runtime from 'react/jsx-runtime.js'
+import * as runtime from 'react/jsx-runtime'
 
 // Components that are available in all MDX
 import customComponents from 'shared/components/mdx'
@@ -15,16 +15,18 @@ import customComponents from 'shared/components/mdx'
 // Previous-Next navigation
 import PrevNext from '../mdx/prev-next'
 
-const Null = (props) => null
+const Null = () => null
 
-const MdxWrapper = ({mdx, app, t, components={}}) => {
-
+const MdxWrapper = ({ mdx, app, t, components = {} }) => {
   const [mdxModule, setMdxModule] = useState()
 
   useEffect(() => {
-    ;(async () => {
+    // This is a workaround to keep prettier and eslint
+    // from fighting over syntax
+    async function prettierEslintPeaceDeal() {
       setMdxModule(await run(mdx, runtime))
-    })()
+    }
+    prettierEslintPeaceDeal()
   }, [mdx])
 
   /*
@@ -34,20 +36,20 @@ const MdxWrapper = ({mdx, app, t, components={}}) => {
    */
   const allComponents = {
     ...customComponents(app, t),
-    ...components
+    ...components,
   }
 
   // React component for MDX content
   const MdxContent = mdxModule ? mdxModule.default : Null
 
-  return app
-    ? (
-      <div className="text-primary mdx max-w-prose text-base-content max-w-prose text-lg lg:text-xl">
-        {mdxModule && <MdxContent components={allComponents}/>}
-        <PrevNext app={app} />
-      </div>
-    ) : <MdxContent components={allComponents}/>
+  return app ? (
+    <div className="text-primary mdx max-w-prose text-base-content max-w-prose text-base">
+      {mdxModule && <MdxContent components={allComponents} />}
+      <PrevNext app={app} />
+    </div>
+  ) : (
+    <MdxContent components={allComponents} />
+  )
 }
 
 export default MdxWrapper
-

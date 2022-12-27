@@ -1,3 +1,4 @@
+import { Bezier } from 'bezier-js'
 import { Attributes } from './attributes.mjs'
 import * as utils from './utils.mjs'
 import { Point, pointsProxy } from './point.mjs'
@@ -78,6 +79,16 @@ Part.prototype.attr = function (name, value, overwrite = false) {
 }
 
 /**
+ * Gets a free ID to use in the part
+ *
+ * @param {string} prefix - An optional prefix to apply to the ID
+ * @return {string} id - A free ID to use
+ */
+Part.prototype.getId = function (prefix = '') {
+  return this.__getIdClosure()(prefix)
+}
+
+/**
  * Hide the part
  *
  * @return {Part} part - The Part instance
@@ -122,6 +133,7 @@ Part.prototype.shorthand = function () {
     store: this.context.store,
     units: this.__unitsClosure(),
     utils: utils,
+    Bezier: Bezier,
   }
   // Add top-level store methods and add a part name parameter
   const partName = this.name

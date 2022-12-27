@@ -25,6 +25,20 @@
 
  - Workaround for not finding a suitable legband radius
 
+### unice
+
+#### Added
+
+ - Added new Front Curve and Back Curve style options
+
+#### Changed
+
+ - Updated gusset to always curve inward
+
+#### Fixed
+
+ - Fixed bug which prevented parts from being generated as intended
+
 ### waralee
 
 #### Added
@@ -978,6 +992,12 @@
 
  - Fix bug in Svg.escapeText() that only escaped the first quote
 
+### backend
+
+#### Fixed
+
+ - Mitigate risk of denial-of-service attacks in catch-all route
+
 
 ## 2.20.4 (2022-01-28)
 
@@ -1915,12 +1935,6 @@
  - This is a plugin to strip (FreeSewing) versdion info out of the SVG to allow you to diff your SVG output between FreeSewing versions
  - Initial release
 
-### snapseries
-
-#### Added
-
- - Initial release of `@freesewing/snapseries` wich holds commonly used series of snap values for percentage options
-
 ### core
 
 #### Added
@@ -1937,6 +1951,12 @@
 
  - Fixed bug in resolving of shared pattern options
  - Removed optional chaining which broke node v12 support
+
+### snapseries
+
+#### Added
+
+ - Initial release of `@freesewing/snapseries` wich holds commonly used series of snap values for percentage options
 
 
 ## 2.18.0 (2021-09-09)

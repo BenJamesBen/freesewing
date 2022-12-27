@@ -51,6 +51,7 @@ const mdxLoader = async (language, site, slug, jargon) => {
   const mdx = String(
     await compile(md, {
       outputFormat: 'function-body',
+      development: false,
       remarkPlugins: [
         remarkFrontmatter,
         remarkGfm,
@@ -79,6 +80,16 @@ const mdxLoader = async (language, site, slug, jargon) => {
                 'index.mjs',
                 'part.mjs',
                 'bib.mjs',
+              ],
+              json: [
+                '200.json',
+                '201.json',
+                '204.json',
+                '400.json',
+                '401.json',
+                '403.json',
+                '404.json',
+                '500.json',
               ],
               markdown: ['en.md'],
             },
@@ -116,6 +127,7 @@ const mdxLoader = async (language, site, slug, jargon) => {
   const toc = String(
     await compile(md, {
       outputFormat: 'function-body',
+      development: false,
       remarkPlugins: [remarkFrontmatter, remarkGfm, smartypants, [mdxPluginToc, { language }]],
       rehypePlugins: [rehypeSlug],
     })

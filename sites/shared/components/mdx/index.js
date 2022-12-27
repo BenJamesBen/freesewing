@@ -6,9 +6,13 @@ import ReadMore from './read-more.js'
 import { Tab, Tabs } from './tabs.js'
 import Example from './example.js'
 import Examples from './examples.js'
+import Method from './http-method.js'
+import StatusCode from './status-code.js'
 
 const mdxCustomComponents = (app = false) => ({
   // Custom components
+  Method,
+  StatusCode,
   Comment: (props) => <Popout {...props} comment />,
   Fixme: (props) => <Popout {...props} fixme />,
   Link: (props) => <Popout {...props} link />,
@@ -32,3 +36,5 @@ const mdxCustomComponents = (app = false) => ({
 })
 
 export default mdxCustomComponents
+
+//<span className="bg-secondary px-2 mx-1 rounded text-primary-content bg-opacity-80">{children}</span>

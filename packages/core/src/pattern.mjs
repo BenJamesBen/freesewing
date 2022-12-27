@@ -11,6 +11,9 @@ import { Store } from './store.mjs'
 import { Hooks } from './hooks.mjs'
 import { version } from '../data.mjs'
 import { __loadPatternDefaults } from './config.mjs'
+import cloneDeep from 'lodash.clonedeep'
+
+const DISTANCE_DEBUG = false
 
 //////////////////////////////////////////////
 //               CONSTRUCTOR                //
@@ -53,7 +56,7 @@ export function Pattern(designConfig) {
   __addNonEnumProp(this, '__hide', {})
 
   // Enumerable properties
-  this.designConfig = designConfig // The design configuration (unresolved)
+  this.designConfig = cloneDeep(designConfig) // The design configuration (unresolved)
   this.config = {} // Will hold the resolved pattern after calling __init()
   this.store = new Store() // Pattern-wide store
   this.setStores = [] // Per-set stores
@@ -108,62 +111,73 @@ Pattern.prototype.draft = function () {
     this.__loadAbsoluteOptionsSet(set)
 
     for (const partName of this.config.draftOrder) {
-      // Create parts
-      this.setStores[set].log.debug(`📦 Creating part \`${partName}\` (set ${set})`)
-      this.parts[set][partName] = this.__createPartWithContext(partName, set)
-
-      // Handle inject/inheritance
-      if (typeof this.__inject[partName] === 'string') {
-        this.setStores[set].log.debug(
-          `Creating part \`${partName}\` from part \`${this.__inject[partName]}\``
-        )
-        try {
-          this.parts[set][partName].__inject(this.parts[set][this.__inject[partName]])
-        } catch (err) {
-          this.setStores[set].log.error([
-            `Could not inject part \`${this.__inject[partName]}\` into part \`${partName}\``,
-            err,
-          ])
-        }
-      }
-      if (this.__needs(partName, set)) {
-        // Draft part
-        if (typeof this.__designParts?.[partName]?.draft === 'function') {
-          this.activePart = partName
-          try {
-            this.__runHooks('prePartDraft')
-            const result = this.__designParts[partName].draft(this.parts[set][partName].shorthand())
-            this.__runHooks('postPartDraft')
-            if (typeof result === 'undefined') {
-              this.setStores[set].log.error(
-                `Result of drafting part ${partName} was undefined. Did you forget to return the part?`
-              )
-            } else this.parts[set][partName] = result
-          } catch (err) {
-            this.setStores[set].log.error([
-              `Unable to draft part \`${partName}\` (set ${set})`,
-              err,
-            ])
-          }
-        } else
-          this.setStores[set].log.error(
-            `Unable to draft pattern part __${partName}__. Part.draft() is not callable`
-          )
-        // FIXME: THis won't work not that this is immutable
-        // But is it still needed?
-        // this.parts[set][partName].hidden === true ? true : !this.__wants(partName, set)
-      } else {
-        this.setStores[set].log.debug(
-          `Part \`${partName}\` is not needed. Skipping draft and setting hidden to \`true\``
-        )
-        this.parts[set][partName].hidden = true
-      }
+      this.createPartForSet(partName, set)
     }
     this.__runHooks('postSetDraft')
   }
   this.__runHooks('postDraft')
 
   return this
+}
+
+Pattern.prototype.createPartForSet = function (partName, set = 0) {
+  // gotta protect against attacks
+  if (set === '__proto__') {
+    throw new Error('malicious attempt at altering Object.prototype. Stopping action')
+  }
+  // Create parts
+  this.setStores[set].log.debug(`📦 Creating part \`${partName}\` (set ${set})`)
+  this.parts[set][partName] = this.__createPartWithContext(partName, set)
+
+  // Handle inject/inheritance
+  if (typeof this.__inject[partName] === 'string') {
+    this.setStores[set].log.debug(
+      `Creating part \`${partName}\` from part \`${this.__inject[partName]}\``
+    )
+    try {
+      this.parts[set][partName].__inject(this.parts[set][this.__inject[partName]])
+    } catch (err) {
+      this.setStores[set].log.error([
+        `Could not inject part \`${this.__inject[partName]}\` into part \`${partName}\``,
+        err,
+      ])
+    }
+  }
+  if (this.__needs(partName, set)) {
+    // Draft part
+    const result = this.draftPartForSet(partName, set)
+    if (typeof result !== 'undefined') this.parts[set][partName] = result
+    // FIXME: THis won't work not that this is immutable
+    // But is it still needed?
+    // this.parts[set][partName].hidden === true ? true : !this.__wants(partName, set)
+  } else {
+    this.setStores[set].log.debug(
+      `Part \`${partName}\` is not needed. Skipping draft and setting hidden to \`true\``
+    )
+    this.parts[set][partName].hidden = true
+  }
+}
+
+Pattern.prototype.draftPartForSet = function (partName, set) {
+  if (typeof this.__designParts?.[partName]?.draft === 'function') {
+    this.activePart = partName
+    try {
+      this.__runHooks('prePartDraft')
+      const result = this.__designParts[partName].draft(this.parts[set][partName].shorthand())
+      this.__runHooks('postPartDraft')
+      if (typeof result === 'undefined') {
+        this.setStores[set].log.error(
+          `Result of drafting part ${partName} was undefined. Did you forget to return the part?`
+        )
+      }
+      return result
+    } catch (err) {
+      this.setStores[set].log.error([`Unable to draft part \`${partName}\` (set ${set})`, err])
+    }
+  } else
+    this.setStores[set].log.error(
+      `Unable to draft pattern part __${partName}__. Part.draft() is not callable`
+    )
 }
 
 /**
@@ -185,11 +199,10 @@ Pattern.prototype.getRenderProps = function () {
   // Run pre-render hook
   let svg = new Svg(this)
   svg.hooks = this.hooks
-  svg.__runHooks('preRender')
 
   this.__pack()
-  // Run post-layout hook
-  this.__runHooks('postLayout')
+  svg.__runHooks('preRender')
+
   let props = { svg }
   props.width = this.width
   props.height = this.height
@@ -228,6 +241,7 @@ Pattern.prototype.getRenderProps = function () {
     })),
   }
 
+  svg.__runHooks('postRender')
   return props
 }
 
@@ -467,11 +481,22 @@ Pattern.prototype.__addPartOptions = function (part) {
         // Keep design parts immutable in the pattern or risk subtle bugs
         this.config.options[optionName] = Object.freeze(part.options[optionName])
         this.store.log.debug(`🔵  __${optionName}__ option loaded from part \`${part.name}\``)
-      } else if (
-        this.__mutated.optionDistance[optionName] < this.__mutated.partDistance[part.name]
-      ) {
-        this.config.options[optionName] = part.options[optionName]
-        this.store.log.debug(`🟣  __${optionName}__ option overwritten by \`${part.name}\``)
+      } else {
+        if (DISTANCE_DEBUG)
+          this.store.log.debug(
+            'optionDistance for ' +
+              optionName +
+              ' is ' +
+              this.__mutated.optionDistance[optionName] +
+              ', and partDistance for ' +
+              part.name +
+              ' is ' +
+              this.__mutated.partDistance[part.name]
+          )
+        if (this.__mutated.optionDistance[optionName] > this.__mutated.partDistance[part.name]) {
+          this.config.options[optionName] = part.options[optionName]
+          this.store.log.debug(`🟣  __${optionName}__ option overwritten by \`${part.name}\``)
+        }
       }
     }
   }
@@ -491,7 +516,7 @@ function getPluginName(plugin) {
     if (plugin[0].plugin.name) return plugin[0].plugin.name
   } else {
     if (plugin.name) return plugin.name
-    if (plugin.plugin.name) return plugin.plugin.name
+    if (plugin.plugin?.name) return plugin.plugin.name
   }
 
   return false
@@ -754,17 +779,18 @@ Pattern.prototype.__isStackHidden = function (stackName) {
 }
 
 /**
- * Generates an array of settings.options objects for sampling a list option
+ * Generates an array of settings.options objects for sampling a list or boolean option
  *
  * @private
  * @param {string} optionName - Name of the option to sample
  * @return {Array} sets - The list of settings objects
  */
-Pattern.prototype.__listOptionSets = function (optionName) {
+Pattern.prototype.__listBoolOptionSets = function (optionName) {
   let option = this.config.options[optionName]
   const base = this.__setBase()
   const sets = []
   let run = 1
+  if (typeof option.bool !== 'undefined') option = { list: [false, true] }
   for (const choice of option.list) {
     const settings = {
       ...base,
@@ -1067,11 +1093,15 @@ Pattern.prototype.__needs = function (partName, set = 0) {
  * @return {Array} sets - The list of settings objects
  */
 Pattern.prototype.__optionSets = function (optionName) {
-  let option = this.config.options[optionName]
-  if (typeof option?.list === 'object') return this.__listOptionSets(optionName)
   const sets = []
+  if (!(optionName in this.config.options)) return sets
+  let option = this.config.options[optionName]
+  if (typeof option.list === 'object' || typeof option.bool !== 'undefined')
+    return this.__listBoolOptionSets(optionName)
   let factor = 1
   let step, val
+  let numberRuns = 10
+  let stepFactor = numberRuns - 1
   if (typeof option.min === 'undefined' || typeof option.max === 'undefined') {
     const min = option * 0.9
     const max = option * 1.1
@@ -1079,9 +1109,16 @@ Pattern.prototype.__optionSets = function (optionName) {
   }
   if (typeof option.pct !== 'undefined') factor = 100
   val = option.min / factor
-  step = (option.max / factor - val) / 9
+  if (typeof option.count !== 'undefined' || typeof option.mm !== 'undefined') {
+    const numberOfCounts = option.max - option.min + 1
+    if (numberOfCounts < 10) {
+      numberRuns = numberOfCounts
+      stepFactor = Math.max(numberRuns - 1, 1)
+    }
+  }
+  step = (option.max / factor - val) / stepFactor
   const base = this.__setBase()
-  for (let run = 1; run < 11; run++) {
+  for (let run = 1; run <= numberRuns; run++) {
     const settings = {
       ...base,
       options: {
@@ -1093,6 +1130,8 @@ Pattern.prototype.__optionSets = function (optionName) {
     settings.options[optionName] = val
     sets.push(settings)
     val += step
+    if (typeof option.count !== 'undefined' || typeof option.mm !== 'undefined')
+      val = Math.round(val)
   }
 
   return sets
@@ -1105,6 +1144,7 @@ Pattern.prototype.__optionSets = function (optionName) {
  * @return {Pattern} this - The Pattern instance
  */
 Pattern.prototype.__pack = function () {
+  this.__runHooks('preLayout')
   for (const set in this.settings) {
     if (this.setStores[set].logs.error.length > 0) {
       this.setStores[set].log.warning(`One or more errors occured. Not packing pattern parts`)
@@ -1165,6 +1205,7 @@ Pattern.prototype.__pack = function () {
     }
   }
 
+  this.__runHooks('postLayout')
   return this
 }
 
@@ -1247,41 +1288,104 @@ Pattern.prototype.__resolveParts = function (count = 0, distance = 0) {
     }
   }
   distance++
+  if (DISTANCE_DEBUG) this.store.log.debug('Distance incremented to ' + distance)
   for (const part of this.designConfig.parts) {
-    if (typeof this.__mutated.partDistance[part.name] === 'undefined')
+    if (typeof this.__mutated.partDistance[part.name] === 'undefined') {
       this.__mutated.partDistance[part.name] = distance
+      if (DISTANCE_DEBUG)
+        this.store.log.debug(
+          'Base partDistance for ' + part.name + ' is ' + this.__mutated.partDistance[part.name]
+        )
+    }
   }
   for (const [name, part] of Object.entries(this.__designParts)) {
+    const current_part_distance = this.__mutated.partDistance[part.name]
+    const proposed_dependent_part_distance = current_part_distance + 1
     // Hide when hideAll is set
     if (part.hideAll) this.__mutated.partHide[part.name] = true
     // Inject (from)
     if (part.from) {
+      if (DISTANCE_DEBUG) this.store.log.debug('Processing ' + part.name + ' "from:"')
       this.__setFromHide(part, name, part.from.name)
       this.__designParts[part.from.name] = part.from
       this.__inject[name] = part.from.name
-      this.__mutated.partDistance[part.from.name] = distance
+      if (
+        typeof this.__mutated.partDistance[part.from.name] === 'undefined' ||
+        this.__mutated.partDistance[part.from.name] < proposed_dependent_part_distance
+      ) {
+        this.__mutated.partDistance[part.from.name] = proposed_dependent_part_distance
+        if (DISTANCE_DEBUG)
+          this.store.log.debug(
+            '"from:" partDistance for ' +
+              part.from.name +
+              ' is ' +
+              this.__mutated.partDistance[part.from.name]
+          )
+      }
     }
     // Simple dependency (after)
     if (part.after) {
+      if (DISTANCE_DEBUG) this.store.log.debug('Processing ' + part.name + ' "after:"')
       if (Array.isArray(part.after)) {
         for (const dep of part.after) {
           this.__setAfterHide(part, name, dep.name)
-          this.__mutated.partDistance[dep.name] = distance
           this.__designParts[dep.name] = dep
           this.__addDependency(name, part, dep)
+          if (
+            typeof this.__mutated.partDistance[dep.name] === 'undefined' ||
+            this.__mutated.partDistance[dep.name] < proposed_dependent_part_distance
+          ) {
+            this.__mutated.partDistance[dep.name] = proposed_dependent_part_distance
+            if (DISTANCE_DEBUG)
+              this.store.log.debug(
+                '"after:" partDistance for ' +
+                  dep.name +
+                  ' is ' +
+                  this.__mutated.partDistance[dep.name]
+              )
+          }
         }
       } else {
         this.__setAfterHide(part, name, part.after.name)
-        this.__mutated.partDistance[part.after.name] = distance
         this.__designParts[part.after.name] = part.after
         this.__addDependency(name, part, part.after)
+        if (
+          typeof this.__mutated.partDistance[part.after.name] === 'undefined' ||
+          this.__mutated.partDistance[part.after.name] < proposed_dependent_part_distance
+        ) {
+          this.__mutated.partDistance[part.after.name] = proposed_dependent_part_distance
+          if (DISTANCE_DEBUG)
+            this.store.log.debug(
+              '"after:" partDistance for ' +
+                part.after.name +
+                ' is ' +
+                this.__mutated.partDistance[part.after.name]
+            )
+        }
       }
     }
   }
   // Did we discover any new dependencies?
   const len = Object.keys(this.__designParts).length
   // If so, resolve recursively
-  if (len > count) return this.__resolveParts(len, distance)
+  if (len > count) {
+    if (DISTANCE_DEBUG) this.store.log.debug('Recursing...')
+    return this.__resolveParts(len, distance)
+  }
+  // Print final part distances.
+  for (const part of this.designConfig.parts) {
+    let qualifier = ''
+    if (DISTANCE_DEBUG) qualifier = 'final '
+    this.store.log.debug(
+      '⚪️  `' +
+        part.name +
+        '` ' +
+        qualifier +
+        'options priority is __' +
+        this.__mutated.partDistance[part.name] +
+        '__'
+    )
+  }
 
   for (const part of Object.values(this.__designParts)) this.__addPartConfig(part)
 

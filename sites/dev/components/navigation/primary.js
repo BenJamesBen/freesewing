@@ -74,22 +74,23 @@ const SubLevel = ({ nodes = {}, active }) => (
               items-center
             `}
             >
-              <Link href={`${child.__slug}`}>
-                <a
-                  title={child.__title}
-                  className={`
-                  grow pl-2 border-l-2
-                  ${linkClasses}
-                  hover:cursor-pointer
-                  hover:border-secondary
-                  sm:hover:border-secondary
-                  ${
-                    child.__slug === active
-                      ? 'text-secondary border-secondary sm:text-secondary sm:border-secondary'
-                      : 'text-base-content sm:text-base-content'
-                  }
-                `}
-                >
+              <Link
+                href={`${child.__slug}`}
+                title={child.__title}
+                className={`
+                grow pl-2 border-l-2
+                ${linkClasses}
+                hover:cursor-pointer
+                hover:border-secondary
+                sm:hover:border-secondary
+                ${
+                  child.__slug === active
+                    ? 'text-secondary border-secondary sm:text-secondary sm:border-secondary'
+                    : 'text-base-content sm:text-base-content'
+                }
+              `}
+              >
+                <span className={`${linkClasses} grow hover:cursor-pointer`}>
                   <span
                     className={`
                     text-3xl mr-2 inline-block p-0 leading-3
@@ -105,7 +106,7 @@ const SubLevel = ({ nodes = {}, active }) => (
                   <span className={child.__slug === active ? 'font-bold' : ''}>
                     {child.__linktitle || child.__title}
                   </span>
-                </a>
+                </span>
               </Link>
               <Chevron w={6} m={3} />
             </summary>
@@ -114,21 +115,23 @@ const SubLevel = ({ nodes = {}, active }) => (
         </li>
       ) : (
         <li className="pl-2 flex flex-row items-center" key={child.__slug}>
-          <Link href={`${child.__slug}`} title={child.__title}>
-            <a
-              className={`
-              pl-2 border-l-2
-              grow
-              ${linkClasses}
-              hover:cursor-pointer
-              hover:border-secondary
-              sm:hover:border-secondary
-              ${
-                child.__slug === active
-                  ? 'text-secondary border-secondary sm:text-secondary sm:border-secondary'
-                  : 'text-base-content sm:text-base-content'
-              }`}
-            >
+          <Link
+            href={`${child.__slug}`}
+            title={child.__title}
+            className={`
+            pl-2 border-l-2
+            grow
+            ${linkClasses}
+            hover:cursor-pointer
+            hover:border-secondary
+            sm:hover:border-secondary
+            ${
+              child.__slug === active
+                ? 'text-secondary border-secondary sm:text-secondary sm:border-secondary'
+                : 'text-base-content sm:text-base-content'
+            }`}
+          >
+            <span className={`${linkClasses} hover:cursor-pointer`}>
               <span
                 className={`
                 text-3xl mr-2 inline-block p-0 leading-3
@@ -144,7 +147,7 @@ const SubLevel = ({ nodes = {}, active }) => (
               <span className={child.__slug === active ? 'font-bold' : ''}>
                 {child.__linktitle || child.__title}
               </span>
-            </a>
+            </span>
           </Link>
         </li>
       )
@@ -152,61 +155,9 @@ const SubLevel = ({ nodes = {}, active }) => (
   </ul>
 )
 
-// Component that renders a toplevel of navigation
-/*
-const TopLevel = ({ icon, title, nav, current, slug, hasChildren=false, active }) => (
-  <details className='py-1' open={0}>
-    <summary className={`
-      flex flex-row uppercase gap-4 font-bold text-lg
-      hover:cursor-row-resize
-      p-2
-      text-base-content
-      sm:text-base-content
-      items-center
-    `}>
-      <span className="text-secondary">{icon}</span>
-      <Link href={`${slug}`}>
-        <a className={`
-          grow ${linkClasses} hover:cursor-pointer
-          ${slug === active
-            ? 'text-secondary sm:text-secondary'
-            : ''
-          }`}
-        >
-          {title}
-        </a>
-      </Link>
-    {hasChildren && <Chevron />}
-    </summary>
-    {hasChildren && <SubLevel nodes={current} active={active} />}
-  </details>
-)
-
-const Navigation = ({ app, active, className='' }) => {
-  if (!app.navigation) return null
-  const output = []
-  for (const page of order(app.navigation)) output.push(<TopLevel
-    key={page.__slug}
-    icon={icons[page.__slug]
-      ? icons[page.__slug]('w-6 h-6')
-      : <span className="text-3xl mr-2 translate-y-3 inline-block p-0 leading-3">&deg;</span>
-    }
-    title={page.__title}
-    slug={page.__slug}
-    hasChildren={1}
-    nav={app.navigation}
-    current={order(app.navigation[page.__slug])}
-    active={active}
-  />)
-
-  return <div className={`pb-20 ${className}`}>{output}</div>
-}
-*/
 export const Icons = ({
   app,
-  active,
   ulClasses = '',
-  liClasses = '',
   linkClasses = `grow text-lg lg:text-xl py-1 text-base-content sm:text-base-content
   hover:text-secondary sm:hover:text-secondary hover:cursor-pointer
   flex flex-col items-center`,
@@ -217,11 +168,14 @@ export const Icons = ({
   for (const page of order(app.navigation)) {
     output.push(
       <li key={page.__slug}>
-        <Link href={`${page.__slug}`}>
-          <a className={linkClasses} title={page.__title} style={linkStyle}>
-            {icons[page.__slug] ? icons[page.__slug]('w-14 h-14') : <HelpIcon />}
-            <span className="font-bold">{page.__title}</span>
-          </a>
+        <Link
+          href={`${page.__slug}`}
+          className={linkClasses}
+          title={page.__title}
+          style={linkStyle}
+        >
+          {icons[page.__slug] ? icons[page.__slug]('w-14 h-14') : <HelpIcon />}
+          <span className="font-bold">{page.__title}</span>
         </Link>
       </li>
     )
@@ -229,20 +183,10 @@ export const Icons = ({
 
   return <ul className={ulClasses}>{output}</ul>
 }
-/*
-const PrimaryMenu = ({ app, active, before=[], after=[] }) => (
-  <nav className="mb-12">
-    {before}
-    <Icons app={app} ulClasses="hidden md:block lg:hidden flex flex-col items-center"/>
-    <Navigation app={app} active={active} className="md:hidden lg:block"/>
-    {after}
-  </nav>
-)
-*/
+
 export const MainSections = ({ app, active }) => {
   if (!app.navigation) return null
   const output = []
-  let last
   for (const page of order(app.navigation)) {
     const act = isActive(page.__slug, active)
     const txt = (
@@ -260,28 +204,28 @@ export const MainSections = ({ app, active }) => {
       <li key={page.__slug}>
         {act ? (
           <span
-            className={`${linkClasses}
+            className={`
                 flex flex-row gap-4 items-center
                 text-accent
                 hover:text-base-content
                 p-2 rounded
+                bg-base-200
               `}
             title={page.__title}
           >
             {txt}
           </span>
         ) : (
-          <Link href={`${page.__slug}`}>
-            <a
-              className={`${linkClasses}
-                flex flex-row gap-4 items-center
-                hover:bg-secondary hover:bg-opacity-10
-                p-2 rounded
-              `}
-              title={page.__title}
-            >
-              {txt}
-            </a>
+          <Link
+            href={`/${page.__slug}`}
+            className={`
+              flex flex-row gap-4 items-center
+              hover:bg-secondary hover:bg-opacity-10 hover:cursor-pointer
+              p-2 rounded
+            `}
+            title={page.__title}
+          >
+            {txt}
           </Link>
         )}
       </li>

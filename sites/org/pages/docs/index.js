@@ -3,13 +3,14 @@ import useApp from 'site/hooks/useApp.js'
 import mdxLoader from 'shared/mdx/loader'
 import MdxWrapper from 'shared/components/wrappers/mdx'
 import ReadMore from 'shared/components/mdx/read-more.js'
+import { jargon } from 'site/jargon.mjs'
 
 const DocsPage = ({ title, mdx }) => {
   const app = useApp()
 
   // We don't need all MDX components here, just ReadMore
   const components = {
-    ReadMore: props => <ReadMore {...props} app={app} slug="docs" recurse />,
+    ReadMore: (props) => <ReadMore {...props} app={app} slug="docs" recurse />,
   }
 
   return (
@@ -34,20 +35,14 @@ export default DocsPage
  *
  * To learn more, see: https://nextjs.org/docs/basic-features/data-fetching
  */
-export async function getStaticProps({ params, locale }) {
-
-  const { mdx, frontmatter } = await mdxLoader(
-    locale,
-    'org',
-    ['docs']
-  )
-  const { title='FIXME: Please give this page a title' } = frontmatter
+export async function getStaticProps({ locale }) {
+  const { mdx, frontmatter } = await mdxLoader(locale, 'org', ['docs'], jargon[locale])
+  const { title = 'FIXME: Please give this page a title' } = frontmatter
 
   return {
     props: {
       mdx,
       title,
-    }
+    },
   }
 }
-

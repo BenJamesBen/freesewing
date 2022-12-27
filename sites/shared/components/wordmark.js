@@ -1,7 +1,7 @@
 import Link from 'next/link'
 
 export const InnerWordMark = () => (
-  <span style={{ letterSpacing: '-0.14rem' }}>
+  <span style={{ letterSpacing: '-0.1rem' }}>
     <span className="text-red-400">F</span>
     <span className="text-orange-400">r</span>
     <span className="text-yellow-400">e</span>
@@ -16,12 +16,11 @@ export const InnerWordMark = () => (
 )
 
 export const WordMark = () => (
-  <Link href="/">
-    <a
-      role="button"
-      className="btn btn-ghost btn-sm normal-case text-2xl hover:bg-transparent font-bold"
-    >
-      <InnerWordMark />
-    </a>
+  <Link
+    href="/"
+    role="button"
+    className="btn btn-ghost btn-sm normal-case text-2xl hover:bg-transparent font-bold px-0 -mt-1"
+  >
+    <InnerWordMark />
   </Link>
 )

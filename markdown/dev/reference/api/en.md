@@ -55,7 +55,7 @@ facilitate unit testing and other specific use cases.
 | `Store`      | The [Store](/reference/api/store) constructor |
 
 
-The following named exports are **uitility methods**:
+The following named exports are **utility methods**:
 
 | Named export | Description |
 | ------------ | ------------|
@@ -65,6 +65,7 @@ The following named exports are **uitility methods**:
 | `beamsIntersect`          | See the [beamsIntersect](/reference/api/utils/beamsintersect) documentation |
 | `capitalize`              | See the [capitalize](/reference/api/utils/capitalize) documentation |
 | `circlesIntersect`        | See the [circlesIntersect](/reference/api/utils/circlesintersect) documentation |
+| `curveEdge`               | See the [curveEdge](/reference/api/utils/curveedge) documentation |
 | `curveIntersectsX`        | See the [curveIntersectsX](/reference/api/utils/curveintersectsx) documentation |
 | `curveIntersectsY`        | See the [curveIntersectsY](/reference/api/utils/curveintersectsy) documentation |
 | `curvesIntersect`         | See the [curvesIntersect](/reference/api/utils/curvesintersect) documentation |
@@ -77,6 +78,7 @@ The following named exports are **uitility methods**:
 | `pointOnCurve`            | See the [pointOnCurve](/reference/api/utils/pointoncurve) documentation |
 | `pointOnLine`             | See the [pointOnLine](/reference/api/utils/pointonline) documentation |
 | `rad2deg`                 | See the [rad2deg](/reference/api/utils/rad2deg) documentation |
+| `round`                   | See the [round](/reference/api/utils/round) documentation |
 | `splitCurve`              | See the [splitCurve](/reference/api/utils/splitcurve) documentation |
 | `stretchToScale`          | See the [stretchToScale](/reference/api/utils/stretchtoscale) documentation |
 | `units`                   | See the [units](/reference/api/utils/units) documentation |

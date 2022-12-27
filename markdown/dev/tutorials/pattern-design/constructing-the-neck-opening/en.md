@@ -6,7 +6,7 @@ order: 160
 Our goal is to construct an oval neck opening that has a circumference
 that is the `head` measurements multiplied by the `neckRatio` option.
 
-That might involve some trial and error. But since the neck opening will be symetric
+That might involve some trial and error. But since the neck opening will be symmetric
 both horizontal and vertical, we only need to construct one quadrant.
 
 ## Desructuring measurements and options
@@ -136,7 +136,7 @@ If you've read through the high-level [Pattern guide](/guides/patterns) you
 will have learned that paths always start with a `move()` operation. In this
 case, we moved to our `right` points.
 
-From there, we drew a cubic Bezier curve to our `bottom` point by using
+From there, we drew a cubic Bézier curve to our `bottom` point by using
 `rightCp1` and `bottomCp2` as control points.
 
 When all is said and done, we now have a quarter of our neck opening.

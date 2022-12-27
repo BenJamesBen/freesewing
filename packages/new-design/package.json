@@ -24,17 +24,17 @@
     "lab": "cd ../../sites/lab && yarn start",
     "tips": "node ../../scripts/help.mjs",
     "lint": "npx eslint 'lib/*.mjs'",
-    "i18n-only": "node ../../sites/shared/prebuild/i18n-only.mjs"
+    "i18n-only": "SITE=\"new-design/shared\" node ../../sites/shared/prebuild/i18n-only.mjs"
   },
   "peerDependencies": {},
   "dependencies": {
-    "axios": "^1.1.2",
-    "chalk": "^5.0.1",
-    "execa": "^6.1.0",
-    "mustache": "^4.2.0",
-    "ora": "^6.1.0",
-    "prompts": "^2.4.2",
-    "recursive-readdir": "^2.2.2"
+    "axios": "1.1.2",
+    "chalk": "5.0.1",
+    "execa": "6.1.0",
+    "mustache": "4.2.0",
+    "ora": "6.1.0",
+    "prompts": "2.4.2",
+    "recursive-readdir": "2.2.2"
   },
   "devDependencies": {},
   "files": [
