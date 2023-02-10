@@ -291,6 +291,13 @@
       "difficulty": 1,
       "tags": ["tops", "historical"]
     },
+    "turtleneck": {
+      "description": "A FreeSewing pattern that needs a description",
+      "code": "Coder name",
+      "design": "Designer name",
+      "difficulty": 1,
+      "tags": ["tagname"]
+    },
     "unice": {
       "description": "A FreeSewing pattern for a basic, highly-customizable underwear pattern",
       "code": ["Anna Puk", "Natalia Sayang"],
