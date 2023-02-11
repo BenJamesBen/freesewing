@@ -28,6 +28,7 @@ function draftTurtleneckFacing({
     .line(points.bottomLeft)
     .line(points.bottomRight)
     .line(points.topRight)
+    .line(points.topLeft)
     .close()
 
   // Complete?
@@ -41,13 +42,38 @@ function draftTurtleneckFacing({
       scale: 0.6,
     })
 
+    // Grainline
+    points.grainlineBottom = points.bottomLeft.shiftFractionTowards(points.topRight, 0.1)
+    points.grainlineTop = points.topLeft.shift(
+      -points.bottomLeft.angle(points.grainlineBottom),
+      points.bottomLeft.dist(points.grainlineBottom)
+    )
+    macro('grainline', {
+      from: points.grainlineTop,
+      to: points.grainlineBottom,
+    })
+
     if (sa) {
-      paths.sa = paths.seam.offset(-5).attr('class', 'fabric sa')
+      paths.sa = paths.seam.offset(sa).attr('class', 'fabric sa')
     }
 
     // Paperless?
     if (paperless) {
-      // Add dimensions
+      macro('hd', {
+        from: points.topLeft,
+        to: points.topRight,
+        y: points.topLeft.y - (sa * 3 + 15),
+      })
+      macro('hd', {
+        from: points.bottomLeft,
+        to: points.bottomRight,
+        y: points.bottomLeft.y + (sa * 3 + 15),
+      })
+      macro('vd', {
+        from: points.topLeft,
+        to: points.bottomLeft,
+        x: points.topLeft.x - (sa * 3 + 15),
+      })
     }
   }
 

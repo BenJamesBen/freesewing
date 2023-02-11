@@ -25,9 +25,9 @@ function draftTurtleneckCollar({
 
   paths.seam = new Path()
     .move(points.cfNeck)
-    .line(points.neckEdge)
-    .line(points.collarEdge)
     .line(points.cfCollar)
+    .line(points.collarEdge)
+    .line(points.neckEdge)
     .line(points.cfNeck)
     .close()
 
@@ -50,12 +50,21 @@ function draftTurtleneckCollar({
     })
 
     if (sa) {
-      paths.sa = paths.seam.offset(-5).attr('class', 'fabric sa')
+      paths.sa = paths.seam.offset(sa).attr('class', 'fabric sa')
     }
 
     // Paperless?
     if (paperless) {
-      // Add dimensions
+      macro('hd', {
+        from: points.cfNeck,
+        to: points.neckEdge,
+        y: points.neckEdge.y - (sa * 3 + 15),
+      })
+      macro('vd', {
+        from: points.neckEdge,
+        to: points.collarEdge,
+        x: points.neckEdge.x + (sa * 3 + 15),
+      })
     }
   }
 
