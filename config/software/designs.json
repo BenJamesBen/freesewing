@@ -114,6 +114,13 @@
       "difficulty": 3,
       "tags": ["tops"]
     },
+    "sartemis": {
+      "description": "A FreeSewing pattern that needs a description",
+      "code": "Coder name",
+      "design": "Designer name",
+      "difficulty": 1,
+      "tags": ["tagname"]
+    },
     "titan": {
       "description": "A FreeSewing pattern for a unisex trouser block",
       "code": "Joost De Cock",
