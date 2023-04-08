@@ -1,4 +1,5 @@
 import { front } from './front.mjs'
+import { back } from './back.mjs'
 
 function draftTurtleneckCollar({
   Point,
@@ -14,19 +15,30 @@ function draftTurtleneckCollar({
   units,
   part,
 }) {
-  const necklineLength = store.get('necklineLength')
+  const necklineLength = store.get('frontNecklineLength') + store.get('backNecklineLength')
   const halfNecklineLength = necklineLength / 2
-  const width = 60
+  const length = halfNecklineLength
+
+  const frontNeckDepth = store.get('frontNeckDepth')
+  const backNeckDepth = store.get('backNeckDepth')
+  const neckDepthDifferential = frontNeckDepth - backNeckDepth
+
+  const frontWidth = 60
+  const backWidth = 60 - neckDepthDifferential / 2
 
   points.cfNeck = new Point(0, 0)
   points.neckEdge = new Point(halfNecklineLength, 0)
-  points.collarEdge = new Point(halfNecklineLength, width)
-  points.cfCollar = new Point(0, width)
+  points.collarEdge = new Point(halfNecklineLength, backWidth)
+  points.cfCollar = new Point(0, frontWidth)
+  points.collarCp1 = points.cfCollar.shift(0, length * 0.25)
+  points.collarCp2 = points.collarEdge
+    .shift(-90, neckDepthDifferential / 4)
+    .shift(180, length * 0.25)
 
   paths.seam = new Path()
     .move(points.cfNeck)
     .line(points.cfCollar)
-    .line(points.collarEdge)
+    .curve(points.collarCp1, points.collarCp2, points.collarEdge)
     .line(points.neckEdge)
     .line(points.cfNeck)
     .close()
@@ -73,6 +85,6 @@ function draftTurtleneckCollar({
 
 export const collar = {
   name: 'turtleneck.collar',
-  after: front,
+  after: [front, back],
   draft: draftTurtleneckCollar,
 }
