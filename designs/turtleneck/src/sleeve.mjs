@@ -1,4 +1,5 @@
 import { sleeve as teaganSleeve } from '@freesewing/teagan'
+import { hidePresets } from '@freesewing/core'
 
 function draftTurtleneckSleeve({ points, part, store }) {
   const sleeveOpening = points.hemRight.x - points.hemLeft.x
@@ -10,7 +11,7 @@ function draftTurtleneckSleeve({ points, part, store }) {
 export const sleeve = {
   name: 'turtleneck.sleeve',
   from: teaganSleeve,
-  hideDependencies: true,
+  hide: hidePresets.HIDE_TREE,
   //*** BEN DEBUG START
   // This temporary code is used to "fake" a long-sleeve and will
   // be removed from the final code.

@@ -1,4 +1,5 @@
 import { back as teaganBack } from '@freesewing/teagan'
+import { hidePresets } from '@freesewing/core'
 
 function draftTurtleneckBack({ points, Path, store, part }) {
   // Calculate neckline length and depth, for collar
@@ -15,6 +16,6 @@ function draftTurtleneckBack({ points, Path, store, part }) {
 export const back = {
   name: 'turtleneck.back',
   from: teaganBack,
-  hideDependencies: true,
+  hide: hidePresets.HIDE_TREE,
   draft: draftTurtleneckBack,
 }

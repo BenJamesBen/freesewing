@@ -19,6 +19,5 @@ function draftTurtleneckFront({ points, Path, store, part }) {
 export const front = {
   name: 'turtleneck.front',
   from: teaganFront,
-  hideDependencies: true,
   draft: draftTurtleneckFront,
 }
