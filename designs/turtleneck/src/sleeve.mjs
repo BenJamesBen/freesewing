@@ -1,6 +1,6 @@
 import { sleeve as teaganSleeve } from '@freesewing/teagan'
 
-function draftTurtleneckSleeve({ points, part, options, store }) {
+function draftTurtleneckSleeve({ points, part, store }) {
   const sleeveOpening = points.hemRight.x - points.hemLeft.x
   store.set('cuffLength', sleeveOpening)
 

@@ -9,9 +9,7 @@ function draftTurtleneckFacing({
   sa,
   macro,
   paperless,
-  log,
   store,
-  units,
   part,
 }) {
   const facingLength = store.get('facingLength')

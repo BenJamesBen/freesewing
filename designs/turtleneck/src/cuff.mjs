@@ -9,9 +9,7 @@ function draftTurtleneckCuff({
   sa,
   macro,
   paperless,
-  log,
   store,
-  units,
   part,
 }) {
   const cuffEase = 10

@@ -10,9 +10,7 @@ function draftTurtleneckCollar({
   sa,
   macro,
   paperless,
-  log,
   store,
-  units,
   part,
 }) {
   const necklineLength = store.get('frontNecklineLength') + store.get('backNecklineLength')

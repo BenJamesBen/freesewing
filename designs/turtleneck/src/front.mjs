@@ -1,6 +1,6 @@
 import { front as teaganFront } from '@freesewing/teagan'
 
-function draftTurtleneckFront({ Point, points, Path, paths, log, store, part }) {
+function draftTurtleneckFront({ points, Path, store, part }) {
   // Calculate neckline length and depth, for collar
   const halfNecklinePath = new Path()
     .move(points.neck)
