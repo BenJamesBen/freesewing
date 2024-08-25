@@ -47,8 +47,8 @@ const types = [
   'other',
 ]
 
-const userCard = (id) =>
-  `[![User ${id}](${config.backend}/users/${id}/card)](https://next.freesewing.org/users/${id})`
+export const userCard = (id) =>
+  `[![User ${id}](${config.backend}/users/${id}/card)](https://freesewing.org/users/user?id=${id})`
 
 const templates = {
   bugReport: {

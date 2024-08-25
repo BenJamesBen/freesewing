@@ -3,7 +3,10 @@ title: Setting up the development environment
 order: 20
 ---
 
-FreeSewing provides a development environment that visualizes your design for you.
+FreeSewing provides a development environment that visualizes your design for
+you. This tutorial is for the stand-alone development environment, not the
+monorepo development environment (which you may have set up if you followed a
+getting started tutorial).
 
 To set it up, I will open a terminal and enter the following command:
 
@@ -47,6 +50,20 @@ Now open a browser and go to http://localhost:8000
 If all goes well, we'll should see this landing page:
 
 ![The FreeSewing development environment](./nd.png)
+
+<Tip>
+
+##### More detailed setup tutorials are available
+
+This pattern design tutorial contains only an abbreviated overview
+of the setup process.
+For more detailed instructions, please refer to one of our setup tutorials:
+
+- [Getting started on Linux](/tutorials/getting-started-linux)
+- [Getting started on Mac](/tutorials/getting-started-mac)
+- [Getting started on Windows](/tutorials/getting-started-windows)
+
+</Tip>
 
 <Tip>
 

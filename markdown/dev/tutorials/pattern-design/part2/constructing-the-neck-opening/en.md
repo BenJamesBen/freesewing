@@ -21,10 +21,10 @@ function draftBib({
   Point,
   paths,
   points,
-  // highlight-start
+// highlight-start
   measurements,
   options,
-  // highlight-end
+// highlight-end
   part,
 }) {
 
@@ -39,7 +39,7 @@ Great. Now let's get to work.
 Let's add some points, and use them to draw our first curve:
 
 <Example tutorial caption="Our very first path forms a quarter of our neck opening">
-```js
+```design/src/bib.mjs
 function draftBib({
   Path,
   Point,
@@ -50,7 +50,7 @@ function draftBib({
   part,
 }) {
 
-  // highlight-start
+// highlight-start
   /*
    * Construct the quarter neck opening
    */
@@ -79,7 +79,7 @@ function draftBib({
       points.bottomCp2, 
       points.bottom
     )
-  // highlight-end
+// highlight-end
 
   return part
 }
@@ -157,7 +157,7 @@ paths.quarterNeck = new Path()
 - We're following up with a `Path.move()` call that takes one Point as argument
 - Then, there's a `Path.curve()` call that takes 3 points as arguments
 
-If you've read through the high-level [Pattern guide](/guides/patterns) you
+If you've read through the high-level [Design guide](/guides/designs) you
 will have learned that paths always start with a `move()` operation. In this
 case, we moved to our `right` points.
 
