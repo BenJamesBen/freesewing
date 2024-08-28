@@ -25,11 +25,6 @@ Possible status codes for these endpoints are:
 | <StatusCode status="200"/> | success |
 | <StatusCode status="404"/> | API key not found |
 
-<Note>
-If the status code is not <StatusCode status="200" /> the `error` property
-in the response body should indicate the nature of the problem.
-</Note>
-
 ## Response body
 
 | Value               | Type     | Description |
